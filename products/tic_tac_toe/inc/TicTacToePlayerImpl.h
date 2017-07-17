@@ -30,8 +30,9 @@ public:
      * @brief play
      * @param currentBoard
      */
-    virtual void play(TicTacToeBoard& currentBoard) = 0;
-
+    virtual TicTacToePlayResultType play(int &rowPlayed,
+                                         int &columnPlayed,
+                                         const TicTacToeBoard& currentBoard) = 0;
 
     /**
      * @brief getPlayerClass

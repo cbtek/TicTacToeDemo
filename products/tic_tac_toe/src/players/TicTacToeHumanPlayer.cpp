@@ -11,7 +11,7 @@
 namespace pf_projects {
 namespace products {
 namespace tic_tac_toe {
-namespace player_types {
+namespace players {
 
 
 TicTacToeHumanPlayer::TicTacToeHumanPlayer()
@@ -24,9 +24,11 @@ TicTacToePlayerType TicTacToeHumanPlayer::getPlayerType() const
     return TicTacToePlayerType::Human;
 }
 
-void TicTacToeHumanPlayer::play(TicTacToeBoard &currentBoard)
+TicTacToePlayResultType TicTacToeHumanPlayer::play(int &rowPlayed,
+                                                   int &columnPlayed,
+                                                   const TicTacToeBoard &currentBoard)
 {
-
+    return TicTacToePlayResultType::RandomPlay;
 }
 
 TicTacToeHumanPlayer::~TicTacToeHumanPlayer()

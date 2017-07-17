@@ -24,13 +24,13 @@ public:
     * @brief TicTacToeBoard
     *
 	*/
-    TicTacToeBoard(TicTacToeBoardSize gridSize = TicTacToeBoardSize::Small3x3);
+    TicTacToeBoard();
     
     /**
      * @brief initialize
      * @param gridSize
      */
-    void initialize(TicTacToeBoardSize gridSize);
+    void initialize();
     
     /**
      * @brief toString Generates XML of current state of the
@@ -64,6 +64,13 @@ public:
     const std::vector<TicTacToeCell> &getCells() const;
 
     /**
+     * @brief getIndex
+     * @param row
+     * @param column
+     * @return
+     */
+    size_t getIndex(int row, int column) const;
+    /**
       * @brief TicTacToeBoard (Descructor)
       *
       */
@@ -72,6 +79,7 @@ private:
     size_t m_rowSize;
     size_t m_columnSize;
     std::vector<TicTacToeCell> m_grid;
+
 };
 }}}//end namespace
 

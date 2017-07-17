@@ -9,8 +9,9 @@
 
 #include "TicTacToePlayerFactory.h"
 
-#include "player_types/TicTacToeComputerPlayer.h"
-#include "player_types/TicTacToeHumanPlayer.h"
+#include "players/TicTacToeTestComputerPlayer.h"
+#include "players/TicTacToeAdvancedComputerPlayer.h"
+#include "players/TicTacToeHumanPlayer.h"
 
 namespace pf_projects {
 namespace products {
@@ -23,9 +24,10 @@ TicTacToePlayerPtr TicTacToePlayerFactory::create(const std::string& playerName,
     TicTacToePlayerPtr player;
     switch(playerType)
     {
+
         case TicTacToePlayerType::Human:
         {
-            player = TicTacToePlayerPtr(new player_types::TicTacToeHumanPlayer());
+            player = TicTacToePlayerPtr(new players::TicTacToeHumanPlayer);
             TicTacToePlayerImpl * impl = dynamic_cast<TicTacToePlayerImpl*>(player.get());
             if (impl)
             {
@@ -34,9 +36,20 @@ TicTacToePlayerPtr TicTacToePlayerFactory::create(const std::string& playerName,
             }
             break;
         }
-        case TicTacToePlayerType::Computer:
+        case TicTacToePlayerType::TestComputer:
         {
-            player = TicTacToePlayerPtr(new player_types::TicTacToeComputerPlayer());
+            player = TicTacToePlayerPtr(new players::TicTacToeTestComputerPlayer);
+            TicTacToePlayerImpl * impl = dynamic_cast<TicTacToePlayerImpl*>(player.get());
+            if (impl)
+            {
+                impl->setPlayerClass(playerClass);
+                impl->setPlayerName(playerName);
+            }
+            break;
+        }        
+        case TicTacToePlayerType::AdvancedComputer:
+        {
+            player = TicTacToePlayerPtr(new players::TicTacToeAdvancedComputerPlayer());
             TicTacToePlayerImpl * impl = dynamic_cast<TicTacToePlayerImpl*>(player.get());
             if (impl)
             {

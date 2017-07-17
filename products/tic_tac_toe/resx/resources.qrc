@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imgTitle.png</file>
+        <file>imgO.png</file>
+        <file>imgX.png</file>
+        <file>imgNukaBoyBase.png</file>
+        <file>imgNukaBoyLogo.png</file>
+        <file>imgNukaBoyOverlay.png</file>
+    </qresource>
+</RCC>

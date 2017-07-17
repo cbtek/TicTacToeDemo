@@ -9,7 +9,7 @@
 namespace pf_projects {
 namespace products {
 namespace tic_tac_toe {
-namespace player_types {
+namespace players {
 
 class TicTacToeHumanPlayer : public TicTacToePlayerImpl
 {
@@ -31,7 +31,13 @@ public:
      * @brief play
      * @param currentBoard
      */
-    void play(TicTacToeBoard& currentBoard);
+    /**
+     * @brief play
+     * @param currentBoard
+     */
+    TicTacToePlayResultType play(int &rowPlayed,
+                                 int &columnPlayed,
+                                 const TicTacToeBoard& currentBoard);
     /**
       * @brief TicTacToeHumanPlayer (Descructor)
       *

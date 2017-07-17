@@ -1,5 +1,5 @@
 /*
-    UITicTacToeController.h
+    UITicTacToeBoardController.h
     
 
 */
@@ -7,20 +7,24 @@
 
 #include <QObject>
 
+#include "utility/inc/Random.h"
+
 #include "TicTacToePlayer.hpp"
+#include "UITicTacToeBoardView.h"
 
 namespace pf_projects {
 namespace products {
 namespace tic_tac_toe {
 
-class UITicTacToeController :public QObject
+class UITicTacToeBoardController : public QObject
 {
+    Q_OBJECT
 public:
 
     /**
-     * @brief UITicTacToeController     
+     * @brief UITicTacToeBoardController
      */
-    UITicTacToeController();
+    UITicTacToeBoardController(UITicTacToeBoardView *currentBoard);
 
     /**
      * @brief initialize
@@ -32,17 +36,22 @@ public:
     void initialize(TicTacToePlayerClass player1Class = TicTacToePlayerClass::Player1,
                     TicTacToePlayerType player1Type = TicTacToePlayerType::Human,
                     TicTacToePlayerClass player2Class = TicTacToePlayerClass::Player2,
-                    TicTacToePlayerType player2Type = TicTacToePlayerType::Computer);
+                    TicTacToePlayerType player2Type = TicTacToePlayerType::AdvancedComputer);
+
     /**
       * Destructor for this class      
       */
-    ~UITicTacToeController();
-private:
+    ~UITicTacToeBoardController();
+private:    
+    std::vector<TicTacToePlayerPtr> m_players;
+    size_t m_currentPlayerIndex;
+    UITicTacToeBoardView *m_boardView;
+    TicTacToeBoard m_boardModel;
+    cbtek::common::utility::Random m_random;
 
-    TicTacToeBoard m_board;
-    TicTacToePlayerPtr m_player1,m_player2;
 private slots:
-
+    void onHumanPlayRequested(int row, int column);
+    void onComputerPlay();
 signals:
     void play(int row, int column, TicTacToeTokenType type);
     void gameOver();

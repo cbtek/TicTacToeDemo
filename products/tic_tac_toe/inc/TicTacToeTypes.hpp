@@ -4,24 +4,57 @@
 
 */
 #pragma once
+#include <iostream>
 
 namespace pf_projects {
 namespace products {
 namespace tic_tac_toe {
+namespace TicTacToeUtils
+{
+    /**
+     * @brief getIndex
+     * @param row
+     * @param column
+     * @return
+     */
+    inline static size_t getIndex(int row, int column)
+    {
+        return (3 * static_cast<size_t>(row) + static_cast<size_t>(column));
+    }
+}
+
+enum class TicTacToeButtonType
+{
+    Reset,
+    Exit,
+};
+
+enum class TicTacToeMode
+{
+    Startup,
+    Game,
+    Shutdown,
+};
+
+enum class TicTacToeTransitionModeDirection
+{
+    TransitionOut,
+    TrasnitionIn
+};
 
 enum class TicTacToeTokenType
 {
     X,
-    O
+    O,
+    Empty,
 };
 
-enum class TicTacToeAlgorithmMoveType
+enum class TicTacToePlayResultType
 {
-    WinningMove,
-    BlockingMove,
-    RandomMove,
-    NoMove,
-    EndOfGameMove
+    WinningPlay,
+    BlockingPlay,
+    RandomPlay,
+    NoMoreMovesPlay,
 };
 
 enum class TicTacToeBoardSize
@@ -33,8 +66,9 @@ enum class TicTacToeBoardSize
 
 enum class TicTacToePlayerType
 {
-    Human,
-    Computer,
+    Human,    
+    TestComputer,
+    AdvancedComputer,
     None
 };
 

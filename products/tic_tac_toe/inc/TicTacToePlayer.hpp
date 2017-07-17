@@ -39,9 +39,12 @@ public:
 
     /**
      * @brief play
+     * @param rowPlayed
+     * @param columnPlayed
      * @param currentBoard
+     * @return
      */
-    virtual void play(TicTacToeBoard& currentBoard) = 0;
+    virtual TicTacToePlayResultType play(int &rowPlayed, int &columnPlayed, const TicTacToeBoard& currentBoard) = 0;
 
 
     /**	

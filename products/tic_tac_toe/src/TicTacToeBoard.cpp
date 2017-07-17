@@ -19,23 +19,23 @@ namespace products {
 namespace tic_tac_toe {
 
 
-TicTacToeBoard::TicTacToeBoard(TicTacToeBoardSize gridSize)
-{
-    initialize(gridSize);
+TicTacToeBoard::TicTacToeBoard()
+{ 
 }
 
-void TicTacToeBoard::initialize(TicTacToeBoardSize gridSize)
+void TicTacToeBoard::initialize()
 {
     m_grid.clear();
-    m_grid.resize(static_cast<size_t> (gridSize));
-    m_rowSize = static_cast<size_t>(std::sqrt(m_grid.size()));
-    m_columnSize = static_cast<size_t>(std::sqrt(m_grid.size()));
+    m_grid.resize(9);
+    m_rowSize = 3;
+    m_columnSize = 3;
 
     for (size_t r = 0; r < m_rowSize; ++r)
     {
         for (size_t c = 0; c < m_columnSize; ++c)
         {
-             size_t index = r * c + m_rowSize;
+             size_t index = getIndex(r, c);
+             std::cerr << r<<","<<c<<" = " << index << std::endl;
              if (index < m_grid.size())
              {
                 m_grid[index].setRow(r);
@@ -57,8 +57,8 @@ std::string TicTacToeBoard::toString() const
 
 const TicTacToeCell &TicTacToeBoard::getCell(int row, int column) const
 {
-    int index = row * column + m_rowSize;
-    if (index >=0 && index < m_grid.size())
+    size_t index = getIndex(row, column);
+    if (index < m_grid.size())
     {
         return m_grid[index];
     }
@@ -70,7 +70,7 @@ const TicTacToeCell &TicTacToeBoard::getCell(int row, int column) const
 
 void TicTacToeBoard::setCell(int row, int column, const TicTacToeCell &cell)
 {
-    size_t index = static_cast<size_t>(row) * static_cast<size_t>(column) + m_rowSize;
+    size_t index = getIndex(row, column);
     if (index < m_grid.size())
     {
         m_grid[index] = cell;
@@ -86,6 +86,12 @@ TicTacToeBoard::~TicTacToeBoard()
 {
 
 }
+
+size_t TicTacToeBoard::getIndex(int row, int column) const
+{
+    return 3 * row + column;
+}
+
 }}}//end namespace
 
 

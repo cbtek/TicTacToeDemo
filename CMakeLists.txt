@@ -18,12 +18,12 @@ if (WIN32)
 endif()
 
 include_directories("${PROJECT_SOURCE_DIR}/common")
-include_directories("${PROJECT_SOURCE_DIR}/product")
+include_directories("${PROJECT_SOURCE_DIR}/products")
 
 #Common libraries
 add_subdirectory("${PROJECT_SOURCE_DIR}/common/utility")
 
 #Product libraries
-#add_subdirectory("${PROJECT_SOURCE_DIR}/products/test_PFProjects")
+add_subdirectory("${PROJECT_SOURCE_DIR}/products/qtutils")
 add_subdirectory("${PROJECT_SOURCE_DIR}/products/tic_tac_toe")
 add_subdirectory("${PROJECT_SOURCE_DIR}/products/webcam")
