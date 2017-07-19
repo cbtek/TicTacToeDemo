@@ -51,12 +51,22 @@ UITicTacToeBoardMain::UITicTacToeBoardMain(QWidget *parent) :
     //Load audio files
     m_audTokenPlay.setSource(QUrl("qrc:/audTokenPlay.wav"));
     m_audGameOver.setSource(QUrl("qrc:/audGameOver.wav"));
+
+    //Depending on platform load the correct format.
+    //I would prefer to use the ogg file since its
+    //an open format and its half the size of the mp3.
+    //Windows, ofcourse, is stupid and older versions
+    //may not play ogg files.
+#ifdef __WIN32
+    m_audThemeMusic.setMedia(QUrl("qrc:/audThemeMusic.mp3"));
+#else
     m_audThemeMusic.setMedia(QUrl("qrc:/audThemeMusic.ogg"));
+#endif
 
     //Set audio volumes
     m_audTokenPlay.setVolume(100);
     m_audGameOver.setVolume(100);
-    m_audThemeMusic.setVolume(100);
+    m_audThemeMusic.setVolume(50);
 
     m_ptrStaticAnimationOverlay = new UIStaticAnimation;
     m_ptrStaticAnimationOverlay->hide();
@@ -79,6 +89,7 @@ void UITicTacToeBoardMain::setMusicEnabled(bool toggle)
     m_isMusicEnabled = toggle;
     if (toggle)
     {
+        m_audThemeMusic.setPosition(0);
         m_audThemeMusic.play();
     }
     else m_audThemeMusic.stop();

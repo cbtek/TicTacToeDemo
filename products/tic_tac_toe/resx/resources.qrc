@@ -9,8 +9,9 @@
         <file>imgLooseScreen.png</file>
         <file>imgWinScreen.png</file>
         <file>imgNukaBoyBackground.png</file>
-        <file>audThemeMusic.ogg</file>
         <file>audGameOver.wav</file>
         <file>audTokenPlay.wav</file>
+        <file>audThemeMusic.mp3</file>
+        <file>audThemeMusic.ogg</file>
     </qresource>
 </RCC>

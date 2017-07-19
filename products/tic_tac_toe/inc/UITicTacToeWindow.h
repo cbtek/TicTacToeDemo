@@ -60,5 +60,10 @@ private slots:
       * @brief onStaticToggled
       */
      void onStaticToggled(bool);                          
+
+     /**
+      * @brief onShowAbout
+      */
+     void onShowAbout();
 };
 }}}//end namespace

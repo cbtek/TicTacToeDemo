@@ -8,6 +8,9 @@
 #include "UITicTacToeWindow.h"
 #include "ui_UITicTacToeWindow.h"
 
+#include <QFontDatabase>
+#include <QMessageBox>
+
 namespace pf_projects {
 namespace products {
 namespace tic_tac_toe {
@@ -21,6 +24,7 @@ UITicTacToeWindow::UITicTacToeWindow(QWidget *parent) :
     m_ptrBoardMain = new UITicTacToeBoardMain;
     m_ui->m_frmMain->layout()->addWidget(m_ptrBoardMain);
     connect(m_ui->m_btnClose,SIGNAL(clicked(bool)),this,SLOT(close()));
+    connect(m_ui->m_btnAbout,SIGNAL(clicked(bool)),this,SLOT(onShowAbout()));
     connect(m_ptrBoardMain,SIGNAL(scoresUpdated(int,int,int)),this,SLOT(onScoresUpdated(int,int,int)));
     connect(m_ui->m_chkEnableMusic,
             SIGNAL(toggled(bool)),
@@ -53,6 +57,26 @@ void UITicTacToeWindow::onMusicToggled(bool toggle)
 void UITicTacToeWindow::onStaticToggled(bool toggle)
 {
     m_ptrBoardMain->setStaticEnabled(toggle);
+}
+
+void UITicTacToeWindow::onShowAbout()
+{
+    QString message;
+    message += "<p style='text-align:left;'><br>";
+    message += "  <b>&nbsp;&nbsp;&nbsp;Author:</b> Corey Berry<br>";
+    message += "  <b>&nbsp;&nbsp;&nbsp;&nbsp;Email:</b> Corey.Berry@cbtek.net<br>";
+    message += "  <b>&nbsp;&nbsp;Website:</b> www.cbtek.net<br>";
+    message += "  <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date:</b> July 18, 2017<br>";
+    message += "  <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Song:</b> Victor Dance Orchestra - Great One Step<br>";
+    message += "  <b>&nbsp;&nbsp;License:</b> Public Domain<br>";
+    message += "  <b>&nbsp;&nbsp;&nbsp;Source:</b> www.FreeMusicArchive.org<br>";
+    message += "  <b>&nbsp;&nbsp;Artwork:</b> Created using GIMP, ULEAD PhotoImpact and remixed public domain art from www.openclipart.org<br></p>";
+
+    QMessageBox messageBox(QMessageBox::Information, "About", message);
+    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    messageBox.setTextFormat(Qt::RichText);
+    messageBox.setFont(fixedFont);
+    messageBox.exec();
 }
 }}}//end namespace
 
