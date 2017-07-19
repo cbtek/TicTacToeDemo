@@ -89,9 +89,9 @@ private:
 
     /**
     The following 3 functions represent different modes that the game can be in.
-    Each mode consists of 3 sub-states:
+    Each mode consists of 3 transitions:
         1) Enter: Code in this section is executed once as soon as a mode is selected.
-        2) Update: Code in this section is updated multiple times until the sub-state is
+        2) Update: Code in this section is updated multiple times until the transition is
         changed.
         3) Exit: Code in this section is updated once right before the mode changes.
     */
@@ -177,14 +177,41 @@ private:
 
 private slots:
 
+     /**
+      * @brief onPlayerWon This is called whenever a gameOver state is reached.
+      * @param playerClass The class of the player who won (Player1, Player2, None)
+      * @param playerType The type of player who won (Computer, Human, None)
+      */
      void onPlayerWon(TicTacToePlayerClass playerClass,
                       TicTacToePlayerType playerType);
 
+     /**
+     * @brief onStaticFrameRendered Gets updated whenever the Static effect generates
+     * a frame
+     * @param frame
+     */
     void onStaticFrameRendered(QImage frame);
+
+    /**
+     * @brief onRepaintBoard Occurs when the view requests a repaint of the UI
+     */
     void onRepaintBoard();
+
+    /**
+     * @brief onPlayOccured Occurs everytime a play occurs
+     * @param row The row that was played
+     * @param column The column that was played
+     * @param tokenType The type of token that was played (O or X)
+     */
     void onPlayOccured(int row, int column, TicTacToeTokenType tokenType);
     
 signals:
+    /**
+     * @brief scoresUpdated Sends scores to the main window
+     * @param xScore
+     * @param oScore
+     * @param drawScore
+     */
     void scoresUpdated(int xScore, int oScore, int drawScore);
 
 };
