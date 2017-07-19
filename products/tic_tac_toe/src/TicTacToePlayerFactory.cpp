@@ -9,8 +9,7 @@
 
 #include "TicTacToePlayerFactory.h"
 
-#include "players/TicTacToeTestComputerPlayer.h"
-#include "players/TicTacToeAdvancedComputerPlayer.h"
+#include "players/TicTacToeBasicComputerPlayer.h"
 #include "players/TicTacToeHumanPlayer.h"
 
 namespace pf_projects {
@@ -35,21 +34,10 @@ TicTacToePlayerPtr TicTacToePlayerFactory::create(const std::string& playerName,
                 impl->setPlayerName(playerName);
             }
             break;
-        }
-        case TicTacToePlayerType::TestComputer:
+        }       
+        case TicTacToePlayerType::BasicComputer:
         {
-            player = TicTacToePlayerPtr(new players::TicTacToeTestComputerPlayer);
-            TicTacToePlayerImpl * impl = dynamic_cast<TicTacToePlayerImpl*>(player.get());
-            if (impl)
-            {
-                impl->setPlayerClass(playerClass);
-                impl->setPlayerName(playerName);
-            }
-            break;
-        }        
-        case TicTacToePlayerType::AdvancedComputer:
-        {
-            player = TicTacToePlayerPtr(new players::TicTacToeAdvancedComputerPlayer());
+            player = TicTacToePlayerPtr(new players::TicTacToeBasicComputerPlayer());
             TicTacToePlayerImpl * impl = dynamic_cast<TicTacToePlayerImpl*>(player.get());
             if (impl)
             {

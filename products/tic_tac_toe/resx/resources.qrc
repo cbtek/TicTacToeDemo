@@ -1,10 +1,16 @@
 <RCC>
     <qresource prefix="/">
-        <file>imgTitle.png</file>
         <file>imgO.png</file>
         <file>imgX.png</file>
         <file>imgNukaBoyBase.png</file>
         <file>imgNukaBoyLogo.png</file>
         <file>imgNukaBoyOverlay.png</file>
+        <file>imgDrawScreen.png</file>
+        <file>imgLooseScreen.png</file>
+        <file>imgWinScreen.png</file>
+        <file>imgNukaBoyBackground.png</file>
+        <file>audThemeMusic.ogg</file>
+        <file>audGameOver.wav</file>
+        <file>audTokenPlay.wav</file>
     </qresource>
 </RCC>

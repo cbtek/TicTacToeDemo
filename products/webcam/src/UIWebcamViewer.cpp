@@ -9,86 +9,77 @@
 #include "ui_UIWebcamViewer.h"
 
 #include <QPushButton>
+#include <QCameraControl>
 #include <QComboBox>
+#include <QStandardPaths>
+#include <QDateTime>
+#include <QFile>
 
 namespace pf_projects {
 namespace products {
 namespace webcam {
 
 
-UIWebcamViewer::UIWebcamViewer(QWidget *parent) :
+UIWebcamViewer::UIWebcamViewer(const QCameraInfo &cameraInfo, QWidget *parent) :
     QWidget(parent),
     m_ui(new Ui_UIWebcamViewer)
 {
     m_ui->setupUi(this);    
-    m_currentCamera = nullptr;
-    QObject::connect(m_ui->m_btnBrowseOutput,
-                     SIGNAL(clicked),
-                     this,
-                     SLOT(onBrowseForCaptureOutput));
 
-    QObject::connect(m_ui->m_cmbVideoSources,
-                     SIGNAL(currentIndexChanged(int)),
-                     this,
-                     SLOT(onChangeVideoSource(int)));
-
+    //Setup capture button clicked event
     QObject::connect(m_ui->m_btnCaptureImage,
                      SIGNAL(clicked(bool)),
                      this,
                      SLOT(onCaptureImage()));
 
-    m_availableCameraList = QCameraInfo::availableCameras();
-    size_t index = 0;
 
-    m_currentViewFinder  = new QCameraViewfinder;
+    //Initialize camera objects
+    m_camCurrent = new QCamera(cameraInfo);
+    m_camCurrentViewFinder = new QCameraViewfinder;
+    m_camImageCapture = new QCameraImageCapture(m_camCurrent);
+    m_camMediaRecorder = new QMediaRecorder(m_camCurrent);
+    m_camCurrent->setCaptureMode(QCamera::CaptureStillImage);
+    m_camCurrent->setViewfinder(m_camCurrentViewFinder);
+    QCameraViewfinderSettings settings;
+    settings.setMaximumFrameRate(30);
+    settings.setResolution(width(),height());
+    m_camCurrent->setViewfinderSettings(settings);
+
+    //Put camera viewfinder in layout
     m_ui->m_frmVideoContainer->setLayout(new QVBoxLayout);
-    m_ui->m_frmVideoContainer->layout()->addWidget(m_currentViewFinder);
-    for (const auto& info : m_availableCameraList)
-    {
-        QString cameraLabel = info.description() + "("+info.deviceName()+")";
-        m_ui->m_cmbVideoSources->addItem(cameraLabel,QVariant::fromValue(index));
-        ++index;
-    }
+    m_ui->m_frmVideoContainer->layout()->addWidget(m_camCurrentViewFinder);
+    m_ui->m_lblHeader->setText(cameraInfo.description() + " - "+cameraInfo.deviceName());
 
-    if (m_availableCameraList.count())
-    {
-        onChangeVideoSource(0);
-    }
+    //Start the camera
+    m_camCurrent->start();
+}
+
+void UIWebcamViewer::captureImage(const QString &suffix)
+{
+    //Capture image and save to Pictures folder
+    QString path = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    path += "/pf_webcam_frame_" + QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm_ss") + suffix + ".jpg";
+    m_camImageCapture->capture(path);
+}
+
+void UIWebcamViewer::onCaptureImage()
+{
+    captureImage();
+}
+
+void UIWebcamViewer::resizeEvent(QResizeEvent *event)
+{
+    //Reapply settings to viewfinder for width/height
+    m_camCurrent->stop();
+    QCameraViewfinderSettings settings;
+    m_camCurrent->setViewfinderSettings(settings);
+    settings.setMaximumFrameRate(30);
+    settings.setResolution(width(),height());
+    m_camCurrent->start();
 }
 
 UIWebcamViewer::~UIWebcamViewer()
 {
     delete m_ui;
 }
-
-void UIWebcamViewer::onCaptureImage()
-{
-
-}
-
-void UIWebcamViewer::onEnableAutoCapture()
-{
-
-}
-
-void UIWebcamViewer::onChangeVideoSource(int index)
-{
-    if (index >=0 && index < m_availableCameraList.size())
-    {
-        QCameraInfo info = m_availableCameraList[index];
-        if (m_currentCamera)
-        {
-            delete m_currentCamera;
-        }
-        m_currentCamera = new QCamera(info);
-        m_currentCamera->setViewfinder(m_currentViewFinder);
-        m_currentCamera->start();
-    }
-}
-
-void UIWebcamViewer::onBrowseForCaptureOutput()
-{
-
-}
 }}}//end namespace
-

@@ -28,6 +28,7 @@ TicTacToePlayResultType TicTacToeHumanPlayer::play(int &rowPlayed,
                                                    int &columnPlayed,
                                                    const TicTacToeBoard &currentBoard)
 {
+    //Just a dummy return for now.
     return TicTacToePlayResultType::RandomPlay;
 }
 

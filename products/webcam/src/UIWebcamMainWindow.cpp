@@ -8,7 +8,12 @@
 #include "UIWebcamMainWindow.h"
 #include "ui_UIWebcamMainWindow.h"
 
+
+#include <QCamera>
 #include <QDebug>
+#include <QLayoutItem>
+#include <QSpacerItem>
+#include <QTimer>
 
 namespace pf_projects {
 namespace products {
@@ -20,12 +25,148 @@ UIWebcamMainWindow::UIWebcamMainWindow(QWidget *parent) :
     m_ui(new Ui_UIWebcamMainWindow)
 {
     m_ui->setupUi(this);
+    m_intRowCount = 1;
+    m_intColumnCount = 0;
 
+    //Initialize the detection thread
+    m_ptrDetectionThread = new UIWebcamPlugNPlayDetectionThread;
+
+    // Connect three click events for buttons associated with closing,
+    // capturing all camera frames and rescanning
+    connect(m_ui->m_btnClose,SIGNAL(clicked(bool)),this,SLOT(onClose()));
+    connect(m_ui->m_btnCaptureAll,SIGNAL(clicked(bool)),this,SLOT(onCaptureAll()));
+    connect(m_ui->m_btnRescan,SIGNAL(clicked(bool)),this,SLOT(onRescanForCameras()));
+
+    //Connect the detection thread to signals for determining if cameras are updated
+    connect(m_ptrDetectionThread,
+            SIGNAL(availableCamerasChanged()),
+            this,
+            SLOT(onAvailableCamerasUpdated()));
+
+    //Connect the detection thread to signals for determining if cameras are available
+    connect(m_ptrDetectionThread,
+            SIGNAL(noCamerasAvailable()),
+            this,
+            SLOT(onNoCamerasAvailable()));
+
+    //Start the detection thread
+    m_ptrDetectionThread->start();
+
+    //Start the timer event for using the detection thread
+    startTimer(250);
 }
 
 UIWebcamMainWindow::~UIWebcamMainWindow()
-{
+{    
+    delete m_ptrDetectionThread;
     delete m_ui;
+}
+
+void UIWebcamMainWindow::timerEvent(QTimerEvent *event)
+{
+    //If detection thread is not running then start it up
+    if (!m_ptrDetectionThread->isRunning())
+    {
+        m_ptrDetectionThread->start();
+    }
+}
+
+void UIWebcamMainWindow::onCaptureAll()
+{
+    //Loop over all camera viewers and call capture image
+    size_t count = 0;
+    for (UIWebcamViewer *viewer : m_listWebcamViewers)
+    {
+        viewer->captureImage("[" + QString::number(count) + "]");
+        ++count;
+    }
+}
+
+void UIWebcamMainWindow::onRescanForCameras()
+{
+    //Get list of available cameras and initialize camera viewers
+    m_intRowCount = 1;
+    m_intColumnCount = 0;
+    m_listCameraInfo = QCameraInfo::availableCameras();
+    if (!m_listCameraInfo.empty())
+    {
+        onAddCameraFeeds();
+        this->resizeEvent(nullptr);
+        m_ui->m_lblLoad->hide();
+        m_ui->m_frmMain->show();
+    }
+    else
+    {
+        m_ui->m_lblLoad->setText("No Cameras Detected");
+        m_ui->m_lblLoad->show();
+        m_ui->m_frmMain->hide();
+    }
+}
+
+void UIWebcamMainWindow::onAddCameraFeeds()
+{
+    // Clear out old camera viewer objects
+    m_listWebcamViewers.clear();
+    QGridLayout *gridLayout = dynamic_cast<QGridLayout*>(m_ui->m_frmMain->layout());
+    QLayoutItem *child = gridLayout->takeAt(0);
+    do
+    {
+        if (child)
+        {
+            delete child->widget();
+            delete child;
+        }
+        child = gridLayout->takeAt(0);
+    }
+    while(child);
+
+    //Loop over list of camera infos and build new camera viewer objects
+    for (QCameraInfo info : m_listCameraInfo)
+    {
+        if (gridLayout)
+        {
+            UIWebcamViewer *viewer = new UIWebcamViewer(info);
+
+            //Add viewers to display 3 to a row
+            gridLayout->addWidget(viewer, m_intRowCount, m_intColumnCount);
+            m_listWebcamViewers.push_back(viewer);
+
+            if (m_intColumnCount < 2)
+            {
+                ++m_intColumnCount;
+            }
+            else
+            {
+                m_intColumnCount = 0;
+                ++m_intRowCount;
+            }
+        }
+    }
+}
+
+void UIWebcamMainWindow::onClose()
+{
+    this->close();
+}
+
+void UIWebcamMainWindow::onAvailableCamerasUpdated()
+{
+    //If available cameras were updated then lets call the
+    //rescan function.  This may take a couple of seconds
+    //so show label for informing user.
+    m_ui->m_lblLoad->setText("Detecting Cameras...");
+    m_ui->m_lblLoad->show();
+    m_ui->m_frmMain->hide();
+    QTimer::singleShot(100,this,SLOT(onRescanForCameras()));
+}
+
+void UIWebcamMainWindow::onNoCamerasAvailable()
+{
+    //If no cameras are available then just show label on main
+    //screen letting the user know.
+    m_ui->m_lblLoad->setText("No Cameras Detected.");
+    m_ui->m_lblLoad->show();
+    m_ui->m_frmMain->hide();
 }
 }}}//end namespace
 

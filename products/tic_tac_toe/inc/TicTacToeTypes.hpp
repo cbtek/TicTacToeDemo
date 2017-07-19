@@ -1,8 +1,9 @@
-/*
-    TicTacToeTypes.hpp
-    
+/**
+ * @author Corey Berry (corey.berry@cbtek.net)
+ * @file TicTacToeTypes.hpp
+ * @date 07-18-17
+ **/
 
-*/
 #pragma once
 #include <iostream>
 
@@ -12,7 +13,7 @@ namespace tic_tac_toe {
 namespace TicTacToeUtils
 {
     /**
-     * @brief getIndex
+     * @brief getIndex Get mapped 1D index from 2D Position
      * @param row
      * @param column
      * @return
@@ -23,25 +24,37 @@ namespace TicTacToeUtils
     }
 }
 
+/**
+ * @brief The TicTacToeButtonType enum
+ */
 enum class TicTacToeButtonType
 {
     Reset,
     Exit,
 };
 
+/**
+ * @brief The TicTacToeMode enum
+ */
 enum class TicTacToeMode
 {
     Startup,
     Game,
-    Shutdown,
+    GameOver
 };
 
+/**
+ * @brief The TicTacToeTransitionModeDirection enum
+ */
 enum class TicTacToeTransitionModeDirection
 {
     TransitionOut,
     TrasnitionIn
 };
 
+/**
+ * @brief The TicTacToeTokenType enum
+ */
 enum class TicTacToeTokenType
 {
     X,
@@ -49,6 +62,9 @@ enum class TicTacToeTokenType
     Empty,
 };
 
+/**
+ * @brief The TicTacToePlayResultType enum
+ */
 enum class TicTacToePlayResultType
 {
     WinningPlay,
@@ -57,26 +73,24 @@ enum class TicTacToePlayResultType
     NoMoreMovesPlay,
 };
 
-enum class TicTacToeBoardSize
-{
-    Small3x3 = 9,
-    Medium6x6 = 36,
-    Large9x9 = 81,
-};
-
+/**
+ * @brief The TicTacToePlayerType enum
+ */
 enum class TicTacToePlayerType
 {
     Human,    
-    TestComputer,
-    AdvancedComputer,
+    BasicComputer,
     None
 };
 
+/**
+ * @brief The TicTacToePlayerClass enum
+ */
 enum class TicTacToePlayerClass
 {
     Player1,
     Player2,
-    NoPlayer
+    None
 };
 
 }}}//end namespace

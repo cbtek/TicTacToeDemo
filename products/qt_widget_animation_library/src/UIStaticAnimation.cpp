@@ -10,7 +10,7 @@
 
 namespace pf_projects {
 namespace products {
-namespace qtutils {
+namespace qt_widget_animation_library {
 
 
 UIStaticAnimation::UIStaticAnimation(QWidget *parent) : QWidget(parent)
@@ -53,7 +53,8 @@ void UIStaticAnimation::timerEvent(QTimerEvent *event)
         for (size_t y = 0; y < m_intSize; ++y)
         {
             int grayscaleValue = m_rndRandom.next(m_intMinGrayscale,m_intMaxGrayscale);
-            QColor grayscaleTone(grayscaleValue,grayscaleValue,grayscaleValue,m_qColorHue.alpha());
+            int randomAlpha = m_rndRandom.next(0,32);
+            QColor grayscaleTone(grayscaleValue,grayscaleValue,grayscaleValue,randomAlpha);
             g.fillRect(x,y,1,1,grayscaleTone);
         }
     }

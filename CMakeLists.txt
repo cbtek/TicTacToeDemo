@@ -24,6 +24,6 @@ include_directories("${PROJECT_SOURCE_DIR}/products")
 add_subdirectory("${PROJECT_SOURCE_DIR}/common/utility")
 
 #Product libraries
-add_subdirectory("${PROJECT_SOURCE_DIR}/products/qtutils")
+add_subdirectory("${PROJECT_SOURCE_DIR}/products/qt_widget_animation_library")
 add_subdirectory("${PROJECT_SOURCE_DIR}/products/tic_tac_toe")
 add_subdirectory("${PROJECT_SOURCE_DIR}/products/webcam")

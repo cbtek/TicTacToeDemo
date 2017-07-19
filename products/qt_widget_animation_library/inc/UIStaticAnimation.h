@@ -15,7 +15,7 @@
 
 namespace pf_projects {
 namespace products {
-namespace qtutils {
+namespace qt_widget_animation_library {
 
 class UIStaticAnimation :public QWidget
 {

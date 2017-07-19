@@ -1,8 +1,9 @@
-/*
-    TicTacToeHumanPlayer.h
-    
+/**
+ * @author Corey Berry (corey.berry@cbtek.net)
+ * @file TicTacToeHumanPlayer.h
+ * @date 07-18-17
+ **/
 
-*/
 #pragma once
 #include "TicTacToePlayerImpl.h"
 

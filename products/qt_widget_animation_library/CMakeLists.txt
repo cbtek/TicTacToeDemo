@@ -3,7 +3,7 @@
 #==============================================================================
 cmake_minimum_required(VERSION 3.0)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CURR_TARGET qtutils)
+set(CURR_TARGET qt_widget_animation_library)
 
 set(CURR_TARGET_SOURCES "${CURR_TARGET}_SOURCES")
 set(CURR_TARGET_FORMS "${CURR_TARGET}_FORMS")

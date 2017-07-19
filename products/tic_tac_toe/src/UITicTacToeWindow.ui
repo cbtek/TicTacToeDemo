@@ -11,102 +11,337 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>UITicTacToeWindow</string>
+   <string>Nuka-Boy Tic-Tac-Toe</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">#centralwidget
+{
+	background:#222;
+}</string>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>6</number>
+    </property>
     <item>
      <widget class="QFrame" name="m_frmMain">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="m_lytMain"/>
+      <property name="styleSheet">
+       <string notr="true">#m_frmMain
+{
+	border-radius:10px;
+	background:#ced5b2;
+}</string>
+      </property>
+      <layout class="QVBoxLayout" name="m_lytMain">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="rightMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
+        <number>9</number>
+       </property>
+      </layout>
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="gridFrame">
+     <widget class="QFrame" name="m_frmMenu">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="styleSheet">
+       <string notr="true">#m_frmMenu
+{
+	border:10px solid #ced5b2;
+	border-radius:10px;
+	padding:4px;	
+	color:white;
+	background:#222;
+}
+</string>
+      </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="1">
-        <widget class="QLCDNumber" name="lcdNumber"/>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
-       <item row="3" column="1">
-        <widget class="QLCDNumber" name="lcdNumber_2">
+       <item row="8" column="1">
+        <widget class="QCheckBox" name="m_chkEnableStatic">
+         <property name="styleSheet">
+          <string notr="true">QCheckBox
+{
+	color:white;
+    font-size:14px;
+}
+QCheckbox::indicator
+{
+	color:white;
+	background:black;
+}</string>
+         </property>
+         <property name="text">
+          <string>Enable Static</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLCDNumber" name="m_lcdXScore">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLCDNumber
+{
+	color: #ced5b2;
+	
+}</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLCDNumber" name="m_lcdOScore">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLCDNumber
+{
+	color: #ced5b2;
+	
+}</string>
+         </property>
          <property name="smallDecimalPoint">
           <bool>false</bool>
+         </property>
+         <property name="segmentStyle">
+          <enum>QLCDNumber::Filled</enum>
          </property>
         </widget>
        </item>
        <item row="6" column="1">
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QLabel" name="label_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel
+{
+	color:white;
+}</string>
+         </property>
          <property name="text">
-          <string>Reset</string>
+          <string>D-Score</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
-        <widget class="QPushButton" name="pushButton">
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel
+{
+	color:white;
+}</string>
+         </property>
+         <property name="text">
+          <string>O-Score</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="11" column="1">
+        <widget class="QPushButton" name="m_btnClose">
+         <property name="styleSheet">
+          <string notr="true">QPushButton
+{
+	border:1px solid white;
+	padding:4px;
+	font-size:14px;
+	color:white;
+	background:#990000;
+}
+
+QPushButton::hover
+{
+	background:white;
+	color:black;	
+}</string>
+         </property>
          <property name="text">
           <string>Exit</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QLCDNumber" name="lcdNumber_3"/>
+       <item row="7" column="1">
+        <widget class="QLCDNumber" name="m_lcdDScore">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLCDNumber
+{
+	color: #ced5b2;
+	
+}</string>
+         </property>
+        </widget>
        </item>
-       <item row="1" column="0">
+       <item row="0" column="1">
         <widget class="QLabel" name="label">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel
+{
+	color:white;
+}</string>
+         </property>
          <property name="text">
-          <string>X-Score:</string>
+          <string>X-Score</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+       <item row="10" column="1">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="text">
-          <string>Y-Score:</string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
+        </spacer>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+       <item row="9" column="1">
+        <widget class="QCheckBox" name="m_chkEnableMusic">
+         <property name="styleSheet">
+          <string notr="true">QCheckBox
+{
+	color:white;
+    font-size:14px;
+}
+QCheckbox::indicator
+{
+	color:white;
+	background:black;
+}</string>
          </property>
          <property name="text">
-          <string>D-Score:</string>
+          <string>Enable Music</string>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

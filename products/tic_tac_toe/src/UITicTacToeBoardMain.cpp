@@ -12,32 +12,52 @@
 
 using namespace cbtek::common::utility;
 
-using namespace pf_projects::products::qtutils;
+using namespace pf_projects::products::qt_widget_animation_library;
 
 namespace pf_projects {
 namespace products {
 namespace tic_tac_toe {
 
-const static int c_STARTUP_TIMEOUT_MS = 2;
-const static double c_X_POS_PERCENTAGE = 272 / 1024.0;//.2734375;
-const static double c_Y_POS_PERCENTAGE = 78 / 768.0; //.09375;
+const static double c_X_POS_PERCENTAGE = 272 / 1024.0;
+const static double c_Y_POS_PERCENTAGE = 78 / 768.0;
 const static double c_WIDTH_AMOUNT = 480;
 const static double c_HEIGHT_AMOUNT = 480;
-const static double c_WIDTH_PERCENTAGE = 480 / 1024.0;
-const static double c_HEIGHT_PERCENTAGE = 480 / 768.0;
-const static double c_Y_OFFSET_PERCENTAGE = 128 / 768.0;
-const static double c_X_OFFSET_PERCENTAGE = 128 / 1024.0;
-
 
 UITicTacToeBoardMain::UITicTacToeBoardMain(QWidget *parent) :
-    QMainWindow(parent),
+    QWidget(parent),
     m_ui(new Ui_UITicTacToeBoardMain)
 {
     m_ui->setupUi(this);    
-    m_boardView = nullptr;
-    m_boardController = nullptr;
+    m_isMousePress = false;
+    m_isStaticEnabled = true;
+    m_isMusicEnabled = true;
+    m_intMouseX = 0;
+    m_intMouseY = 0;
+    m_intContentX = 0;
+    m_intContentY = 0;
+    m_intContentW = 0;
+    m_intContentH = 0;
+    m_intXScore = 0;
+    m_intOScore = 0;
+    m_intDScore = 0;
+    m_ptrBoardView = nullptr;
+    m_ptrBoardController = nullptr;
+
+    //Load images for nuka boy
     m_imgUnderlay.load(":/imgNukaBoyBase.png");
     m_imgOverlay.load(":/imgNukaBoyOverlay.png");
+    m_imgBackground.load(":/imgNukaBoyBackground.png");
+
+    //Load audio files
+    m_audTokenPlay.setSource(QUrl("qrc:/audTokenPlay.wav"));
+    m_audGameOver.setSource(QUrl("qrc:/audGameOver.wav"));
+    m_audThemeMusic.setMedia(QUrl("qrc:/audThemeMusic.ogg"));
+
+    //Set audio volumes
+    m_audTokenPlay.setVolume(100);
+    m_audGameOver.setVolume(100);
+    m_audThemeMusic.setVolume(100);
+
     m_ptrStaticAnimationOverlay = new UIStaticAnimation;
     m_ptrStaticAnimationOverlay->hide();
     connect(m_ptrStaticAnimationOverlay,SIGNAL(rendered(QImage)),this,SLOT(onStaticFrameRendered(QImage)));
@@ -49,7 +69,22 @@ UITicTacToeBoardMain::UITicTacToeBoardMain(QWidget *parent) :
     m_currentState.setEnter();
 }
 
-UITicTacToeBoardMain::~UITicTacToeBoardMain()
+void UITicTacToeBoardMain::setStaticEnabled(bool toggle)
+{
+    m_isStaticEnabled = toggle;
+}
+
+void UITicTacToeBoardMain::setMusicEnabled(bool toggle)
+{
+    m_isMusicEnabled = toggle;
+    if (toggle)
+    {
+        m_audThemeMusic.play();
+    }
+    else m_audThemeMusic.stop();
+}
+
+UITicTacToeBoardMain::~UITicTacToeBoardMain ()
 {
     delete m_ui;
 }
@@ -59,21 +94,22 @@ void UITicTacToeBoardMain::resizeEvent(QResizeEvent *event)
     m_imgBuffer = QImage(width(),height(),QImage::Format_ARGB32);
     m_intContentX = static_cast<int>(c_X_POS_PERCENTAGE * width());
     m_intContentY = static_cast<int>(c_Y_POS_PERCENTAGE * height());
-    m_intContentW = (width() / 1024.0) * c_WIDTH_AMOUNT; //static_cast<int>(c_WIDTH_PERCENTAGE * width() - ((c_X_OFFSET_PERCENTAGE * width())/2));
-    m_intContentH = (height() / 768.0) * c_HEIGHT_AMOUNT;
-    //m_intContentH = //static_cast<int>(c_HEIGHT_PERCENTAGE * height()- ((c_Y_OFFSET_PERCENTAGE * height())/2));
+    m_intContentW = (width() / 1024.0) * c_WIDTH_AMOUNT;
+    m_intContentH = (height() / 768.0) * c_HEIGHT_AMOUNT;    
 
-    if (m_boardView)
+    if (m_ptrBoardView)
     {
-        m_boardView->updateBoardSize(m_intContentW,m_intContentH);
+        m_ptrBoardView->updateBoardSize(m_intContentW,m_intContentH);
     }
     this->update();
 }
 
 void UITicTacToeBoardMain::paintEvent(QPaintEvent *event)
 {
+    QWidget::paintEvent(event);
     QPainter g(this);
     g.drawImage(0,0,m_imgBuffer);
+
 }
 
 void UITicTacToeBoardMain::mouseMoveEvent(QMouseEvent *event)
@@ -93,17 +129,22 @@ void UITicTacToeBoardMain::timerEvent(QTimerEvent *event)
 {
     QPainter painter(&m_imgBuffer);
     QRect screenRect(0,0,m_imgBuffer.width(),m_imgBuffer.height());
-    QRect contentRect(m_intContentX, m_intContentY, m_intContentW, m_intContentH);
-    painter.fillRect(screenRect, Qt::black);
+    QRect contentRect(m_intContentX, m_intContentY, m_intContentW, m_intContentH);    
+    painter.drawImage(screenRect, m_imgBackground);
     painter.drawImage(screenRect, m_imgUnderlay);
 
     switch(m_currentMode)
     {
         case TicTacToeMode::Startup:updateStartupMode(painter);break;
         case TicTacToeMode::Game:updateGameMode(painter);break;
-        case TicTacToeMode::Shutdown:updateShutdownMode(painter);break;
+        case TicTacToeMode::GameOver:updateGameOverMode(painter);break;        
     }
-    painter.drawImage(contentRect,m_imgCurrentStaticFrame);
+
+    if (m_isStaticEnabled)
+    {
+        painter.drawImage(contentRect,m_imgCurrentStaticFrame);
+    }
+
     painter.drawImage(screenRect,m_imgOverlay);
     this->update();
 }
@@ -118,6 +159,7 @@ void UITicTacToeBoardMain::updateStartupMode(QPainter &painter)
             {
                 m_imgStartupContent.load(":/imgNukaBoyLogo.png");
             }
+            m_audThemeMusic.play();
             m_tmStartupTimeOut.restart();
             m_currentState.setNextStateType();
         }
@@ -126,9 +168,10 @@ void UITicTacToeBoardMain::updateStartupMode(QPainter &painter)
         {
             QRect contentRect(m_intContentX, m_intContentY, m_intContentW, m_intContentH);
             painter.drawImage(contentRect,m_imgStartupContent);
-            if (m_tmStartupTimeOut.elapsed() > c_STARTUP_TIMEOUT_MS)
+            if (m_isMousePress)
             {
                 m_currentState.setNextStateType();
+                m_isMousePress = false;
             }
         }
         break;
@@ -146,34 +189,42 @@ void UITicTacToeBoardMain::updateGameMode(QPainter &painter)
     switch(m_currentState.getType())
     {
         case StateType::Enter:
-        {
-            if (!m_boardView)
+        {            
+            if (!m_ptrBoardView)
             {
-                m_boardView = new UITicTacToeBoardView;
+                m_ptrBoardView = new UITicTacToeBoardView;
+                connect(m_ptrBoardView,SIGNAL(repaintRequested()),this,SLOT(onRepaintBoard()));
             }
 
-            if (!m_boardController)
+            if (!m_ptrBoardController)
             {
-                m_boardController = new UITicTacToeBoardController(m_boardView);
+                m_ptrBoardController = new UITicTacToeBoardController(m_ptrBoardView);
+                connect(m_ptrBoardController,
+                        SIGNAL(playerWonRound(TicTacToePlayerClass, TicTacToePlayerType)),
+                        SLOT(onPlayerWon(TicTacToePlayerClass,TicTacToePlayerType)));
+
+                connect(m_ptrBoardController,
+                        SIGNAL(playOccured(int, int, TicTacToeTokenType)),
+                        this,
+                        SLOT(onPlayOccured(int, int, TicTacToeTokenType)));
             }
 
-            m_boardController->initialize();
-            m_boardView->updateBoardSize(m_intContentW,m_intContentH);
-            connect(m_boardView,SIGNAL(repaintRequested()),this,SLOT(onRepaintBoard()));
+            m_ptrBoardController->initialize();
+            m_ptrBoardView->updateBoardSize(m_intContentW,m_intContentH);
             m_currentState.setUpdate();
         }
         break;
         case StateType::Update:
         {
             QRect contentRect(m_intContentX, m_intContentY, m_intContentW, m_intContentH);
-            m_boardView->drawBoard(contentRect, painter);
+            m_ptrBoardView->drawBoard(contentRect, painter);
             if (m_intMouseX >= 0 && m_intMouseY >= 0)
             {
                 this->setWindowTitle("Virtual Pos: "+QString::number(m_intMouseX)+", "+QString::number(m_intMouseY));
-                m_boardView->updateBoardMousePosition(m_intMouseX,m_intMouseY);
+                m_ptrBoardView->updateBoardMousePosition(m_intMouseX,m_intMouseY);
                 if (m_isMousePress)
                 {
-                    m_boardView->updateBoardMouseClick(m_intMouseX,m_intMouseY);
+                    m_ptrBoardView->updateBoardMouseClick(m_intMouseX,m_intMouseY);
                     m_isMousePress = false;
                 }
             }
@@ -187,26 +238,73 @@ void UITicTacToeBoardMain::updateGameMode(QPainter &painter)
     }
 }
 
-void UITicTacToeBoardMain::updateShutdownMode(QPainter &painter)
+void UITicTacToeBoardMain::updateGameOverMode(QPainter &painter)
 {
     switch(m_currentState.getType())
     {
         case StateType::Enter:
         {
-
+            m_currentState.setNextStateType();
+            m_audGameOver.play();
         }
         break;
         case StateType::Update:
         {
-
+            QRect contentRect(m_intContentX, m_intContentY, m_intContentW, m_intContentH);
+            painter.drawImage(contentRect,m_imgGameOverContent);
+            if (m_intMouseX >= 0 && m_intMouseY >= 0)
+            {
+                if (m_isMousePress)
+                {
+                    m_currentMode = TicTacToeMode::Game;
+                    m_currentState.reset();
+                    m_isMousePress = false;
+                }
+            }
         }
         break;
         case StateType::Exit:
         {
-
+            m_currentState.setNextStateType();
         }
         break;
     }
+}
+
+void UITicTacToeBoardMain::onPlayerWon(TicTacToePlayerClass playerClass,
+                                       TicTacToePlayerType playerType)
+{
+    if (playerClass == TicTacToePlayerClass::Player1)
+    {
+        ++m_intXScore;
+    }
+    else if (playerClass == TicTacToePlayerClass::Player2)
+    {
+        ++m_intOScore;
+    }
+    else ++m_intDScore;
+
+
+    emit scoresUpdated(m_intXScore,
+                       m_intOScore,
+                       m_intDScore);
+
+
+    m_currentMode = TicTacToeMode::GameOver;
+    m_currentState.reset();
+    if (playerType == TicTacToePlayerType::Human)
+    {
+        m_imgGameOverContent.load(":/imgWinScreen.png");
+    }
+    else if (playerType == TicTacToePlayerType::BasicComputer)
+    {
+        m_imgGameOverContent.load(":/imgLooseScreen.png");
+    }
+    else
+    {
+        m_imgGameOverContent.load(":/imgDrawScreen.png");
+    }
+
 }
 
 void UITicTacToeBoardMain::onStaticFrameRendered(QImage frame)
@@ -217,6 +315,11 @@ void UITicTacToeBoardMain::onStaticFrameRendered(QImage frame)
 void UITicTacToeBoardMain::onRepaintBoard()
 {
     this->update();
+}
+
+void UITicTacToeBoardMain::onPlayOccured(int row, int column, TicTacToeTokenType tokenType)
+{
+    m_audTokenPlay.play();
 }
 
 }}}//end namespace

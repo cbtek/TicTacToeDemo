@@ -20,11 +20,38 @@ UITicTacToeWindow::UITicTacToeWindow(QWidget *parent) :
     m_ui->setupUi(this);
     m_ptrBoardMain = new UITicTacToeBoardMain;
     m_ui->m_frmMain->layout()->addWidget(m_ptrBoardMain);
+    connect(m_ptrBoardMain,SIGNAL(scoresUpdated(int,int,int)),this,SLOT(onScoresUpdated(int,int,int)));
+    connect(m_ui->m_chkEnableMusic,
+            SIGNAL(toggled(bool)),
+            this,
+            SLOT(onMusicToggled(bool)));
+
+    connect(m_ui->m_chkEnableStatic,
+            SIGNAL(toggled(bool)),
+            this,
+            SLOT(onStaticToggled(bool)));
 }
 
 UITicTacToeWindow::~UITicTacToeWindow()
 {
     delete m_ui;
+}
+
+void UITicTacToeWindow::onScoresUpdated(int xScore, int oScore, int dScore)
+{
+    m_ui->m_lcdXScore->display(xScore);
+    m_ui->m_lcdOScore->display(oScore);
+    m_ui->m_lcdDScore->display(dScore);
+}
+
+void UITicTacToeWindow::onMusicToggled(bool toggle)
+{
+    m_ptrBoardMain->setMusicEnabled(toggle);
+}
+
+void UITicTacToeWindow::onStaticToggled(bool toggle)
+{
+    m_ptrBoardMain->setStaticEnabled(toggle);
 }
 }}}//end namespace
 

@@ -22,6 +22,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
 
 #==============================================================================
 # Include Source Files
@@ -35,7 +36,7 @@ file(GLOB CURR_TARGET_RESOURCES "resx/*.qrc")
 # Add Executable
 #==============================================================================
 add_executable(${CURR_TARGET}
-			   ${PLATFORM}
+               ${PLATFORM}
                ${CURR_TARGET_SOURCES}
                ${CURR_TARGET_HEADERS}
                ${CURR_TARGET_FORMS}
@@ -45,10 +46,10 @@ add_executable(${CURR_TARGET}
 #==============================================================================
 # Add Dependencies
 #==============================================================================
-qt5_use_modules(${CURR_TARGET} Widgets)
-add_dependencies(${CURR_TARGET} common_utils qtutils)
+qt5_use_modules(${CURR_TARGET} Widgets Multimedia)
+add_dependencies(${CURR_TARGET} common_utils qt_widget_animation_library)
 
 #==============================================================================
 # Target Link Libraries
 #==============================================================================
-target_link_libraries(${CURR_TARGET} common_utils qtutils Qt5::Widgets)
+target_link_libraries(${CURR_TARGET} common_utils qt_widget_animation_library Qt5::Widgets Qt5::Multimedia)

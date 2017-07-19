@@ -17,12 +17,7 @@ namespace tic_tac_toe {
 
 TicTacToeCell::TicTacToeCell()
 {
-    m_ownershipClass = TicTacToePlayerClass::NoPlayer;
-}
-
-TicTacToeCell::~TicTacToeCell()
-{
-
+    m_ownershipClass = TicTacToePlayerClass::None;
 }
 
 void TicTacToeCell::setRow(size_t row)
@@ -61,6 +56,10 @@ void TicTacToeCell::setCellClass(TicTacToePlayerClass playerClass)
 {
     m_ownershipClass = playerClass;
 }
+
+TicTacToeCell::~TicTacToeCell()
+{
+
+}
+
 }}}//end namespace
-
-

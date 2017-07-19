@@ -1,8 +1,9 @@
-/*
-    TicTacToeAdvancedComputerPlayer.h
-    
+/**
+ * @author Corey Berry (corey.berry@cbtek.net)
+ * @file TicTacToeBasicComputerPlayer.h
+ * @date 07-18-17
+ **/
 
-*/
 #pragma once
 
 #include "TicTacToePlayerImpl.h"
@@ -14,49 +15,45 @@ namespace products {
 namespace tic_tac_toe {
 namespace players {
 
-class TicTacToeAdvancedComputerPlayer : public TicTacToePlayerImpl
+class TicTacToeBasicComputerPlayer : public TicTacToePlayerImpl
 {
 public:
    /**
-     * @brief TicTacToeAdvancedComputerPlayer
+     * @brief TicTacToeBasicComputerPlayer
      *
      */
-    TicTacToeAdvancedComputerPlayer();
+    TicTacToeBasicComputerPlayer();
     
 
     /**
-     * @brief getPlayerType
-     * @return
+     * @see TicTacToePlayer::getPlayerType
      */
     TicTacToePlayerType getPlayerType() const;
 
     /**
-     * @brief play
-     * @param rowPlayed
-     * @param columnPlayed
-     * @param currentBoard
-     * @return
+     * @see TicTacToePlayer::play
      */
     TicTacToePlayResultType play(int &rowPlayed,
                            int &columnPlayed,
                            const TicTacToeBoard& currentBoard);
     /**
-      * @brief TicTacToeAdvancedComputerPlayer (Descructor)
-      *
+      * @brief TicTacToeBasicComputerPlayer (Descructor)      
       */
-    ~TicTacToeAdvancedComputerPlayer();
+    ~TicTacToeBasicComputerPlayer();
 
 private:
 
     /**
-     * @brief playToWin
-     * @param row1
-     * @param column1
-     * @param row2
-     * @param column2
-     * @param row3
-     * @param column3
-     * @param currentBoard
+     * @brief playToWin Check if player can win game with one move
+     * @param row1 The empty row to check
+     * @param column1 The empty column to check
+     * @param row2 The 1st non-empty row
+     * @param column2 The 1st non-empty column
+     * @param row3 The 2nd non-empty row
+     * @param column3 The 2nd non-empty column
+     * @param rowOut[out] The row to be played
+     * @param columnOut[out] The column to be played
+     * @param currentBoard const reference to the current game board
      * @return
      */
     TicTacToePlayResultType playToWin(int row1,
@@ -70,14 +67,17 @@ private:
                                 const TicTacToeBoard& currentBoard) const;
 
     /**
-     * @brief playToBlock
-     * @param row1
-     * @param column1
-     * @param row2
-     * @param column2
-     * @param row3
-     * @param column3
-     * @param currentBoard
+     * @brief playToBlock If no win is possible with a single move, check if player can
+     * block the other player from winning.
+     * @param row1 The empty row to check
+     * @param column1 The empty column to check
+     * @param row2 The 1st non-empty row
+     * @param column2 The 1st non-empty column
+     * @param row3 The 2nd non-empty row
+     * @param column3 The 2nd non-empty column
+     * @param rowOut[out] The row to be played
+     * @param columnOut[out] The column to be played
+     * @param currentBoard const reference to the current game board
      * @return
      */
     TicTacToePlayResultType playToBlock(int row1,
@@ -90,24 +90,12 @@ private:
                                   int &columnOut,
                                   const TicTacToeBoard& currentBoard) const;
 
-
-    /**
-     * @brief playToOutsmart
-     * @param row1
-     * @param column1
-     * @param currentBoard
-     * @return
-     */
-    TicTacToePlayResultType playToOutsmart(int row1,
-                                           int column1,
-                                           int &rowOut,
-                                           int &columnOut,
-                                           const TicTacToeBoard &currentBoard) const;
-
     /**
      * @brief playRandomly
-     * @param validCellPositions
-     * @param currentBoard
+     * @param validCellPositions position of all valid cells
+     * @param rowOut[out] The row to be played
+     * @param columnOut[out] The column to be played
+     * @param currentBoard const reference to the current game board
      * @return
      */
     TicTacToePlayResultType playRandomly(const std::vector<std::pair<int, int> > &validCellPositions,
@@ -118,9 +106,9 @@ private:
 
     /**
      * @brief getRandomAvailableCellPosition
-     * @param rowOut
-     * @param columnOut
-     * @param currentBoard
+     * @param rowOut[out] The row to be played
+     * @param columnOut[out] The column to be played
+     * @param currentBoard const reference to the current game board
      * @return
      */
     bool getRandomAvailableCellPosition(int &rowOut,
@@ -128,8 +116,8 @@ private:
                                         const TicTacToeBoard &currentBoard) const;
 
     /**
-     * @brief updatePlay
-     * @param algorithm
+     * @brief updatePlay Update the current play using sent in result type
+     * @param resultType
      * @param sourceRow
      * @param sourceColumn
      * @param firstRow
@@ -140,7 +128,7 @@ private:
      * @param currentBoard
      * @return
      */
-    bool updatePlay(TicTacToePlayResultType algorithm,
+    bool updatePlay(TicTacToePlayResultType resultType,
                     int sourceRow,
                     int sourceColumn,
                     int firstRow,

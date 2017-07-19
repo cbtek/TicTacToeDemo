@@ -11,6 +11,7 @@
 #include "utility/inc/Exception.hpp"
 
 #include <cmath>
+#include <set>
 #include <iostream>
 #include <sstream>
 
@@ -25,19 +26,27 @@ TicTacToeBoard::TicTacToeBoard()
 
 void TicTacToeBoard::initialize()
 {
+    //Clear out the grid and resize it to 9
     m_grid.clear();
     m_grid.resize(9);
+
+    //Set row and column size
     m_rowSize = 3;
     m_columnSize = 3;
 
+    //Loop over all cells
     for (size_t r = 0; r < m_rowSize; ++r)
     {
         for (size_t c = 0; c < m_columnSize; ++c)
         {
-             size_t index = getIndex(r, c);
-             std::cerr << r<<","<<c<<" = " << index << std::endl;
+             size_t index = getIndex(r, c);             
              if (index < m_grid.size())
              {
+                 //Set each cell to "No Player" indicating that the cell
+                 //should initially be empty.
+                m_grid[index].setCellClass(TicTacToePlayerClass::None);
+
+                //Set the row and column for each cell
                 m_grid[index].setRow(r);
                 m_grid[index].setColumn(c);
              }
@@ -82,6 +91,20 @@ const std::vector<TicTacToeCell> &TicTacToeBoard::getCells() const
     return m_grid;
 }
 
+std::vector<std::pair<int, int> > TicTacToeBoard::getEmptyCellPositions() const
+{
+    //Grab all empty cells
+    std::vector<std::pair<int,int> > emptyCellPositions;
+    for(const auto &cell : getCells())
+    {
+        if (cell.getCellClass() == TicTacToePlayerClass::None)
+        {
+            emptyCellPositions.push_back(std::make_pair(cell.getRow(),cell.getColumn()));
+        }
+    }
+    return emptyCellPositions;
+}
+
 TicTacToeBoard::~TicTacToeBoard()
 {
 
@@ -90,6 +113,74 @@ TicTacToeBoard::~TicTacToeBoard()
 size_t TicTacToeBoard::getIndex(int row, int column) const
 {
     return 3 * row + column;
+}
+
+bool TicTacToeBoard::isPlayerInWinState(TicTacToePlayerClass player) const
+{
+    std::set<TicTacToePlayerClass> winSet;
+
+    for (int a1 = 0; a1 < 3; ++a1)
+    {
+        //Check row win condition for player
+        winSet.insert(getCell(a1,0).getCellClass());
+        winSet.insert(getCell(a1,1).getCellClass());
+        winSet.insert(getCell(a1,2).getCellClass());
+        if (winSet.size() == 1 && (*winSet.begin()) == player)
+        {
+            return true;
+        }
+        winSet.clear();
+
+    }
+
+    for (int a1 = 0; a1 < 3; ++a1)
+    {
+        //Check column win condition for player
+        winSet.insert(getCell(0,a1).getCellClass());
+        winSet.insert(getCell(1,a1).getCellClass());
+        winSet.insert(getCell(2,a1).getCellClass());
+        if (winSet.size() == 1 && (*winSet.begin()) == player)
+        {
+            return true;
+        }
+        winSet.clear();
+    }
+
+    //Check left-diag win condition for player
+    winSet.insert(getCell(0,0).getCellClass());
+    winSet.insert(getCell(1,1).getCellClass());
+    winSet.insert(getCell(2,2).getCellClass());
+    if (winSet.size() == 1 && (*winSet.begin()) == player)
+    {
+        return true;
+    }
+    winSet.clear();
+
+
+    //Check right-diag win condition for player
+    winSet.insert(getCell(0,2).getCellClass());
+    winSet.insert(getCell(1,1).getCellClass());
+    winSet.insert(getCell(2,0).getCellClass());
+    if (winSet.size() == 1 && (*winSet.begin()) == player)
+    {
+        return true;
+    }
+    winSet.clear();
+
+    // No win conditions exit for player
+    return false;
+}
+
+bool TicTacToeBoard::isBoardFull() const
+{
+    for (const auto &cell : m_grid)
+    {
+        if (cell.getCellClass() == TicTacToePlayerClass::None)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 }}}//end namespace

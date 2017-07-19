@@ -41,6 +41,9 @@ void UITicTacToeBoardView::reset()
 
 void UITicTacToeBoardView::updateBoardMouseClick(int mousePosX, int mousePosY)
 {
+    //Loop over all cells and determine which empty cell was clicked at
+    //mousePosX and mousePosY.  When it is found, emit it out to the
+    //controller.
     for (size_t r = 0; r < 3; ++r)
     {
         for (size_t c = 0; c < 3; ++c)
@@ -49,7 +52,7 @@ void UITicTacToeBoardView::updateBoardMouseClick(int mousePosX, int mousePosY)
             UITicTacToeToken token = m_tokens[index];
             QRect rect(token.x,token.y,token.w,token.h);
             if (rect.contains(mousePosX, mousePosY) &&
-                token.playerClass == TicTacToePlayerClass::NoPlayer)
+                token.playerClass == TicTacToePlayerClass::None)
             {
                 emit humanPlayRequested(token.row,token.column);
                 return ;
@@ -61,23 +64,27 @@ void UITicTacToeBoardView::updateBoardMouseClick(int mousePosX, int mousePosY)
 void UITicTacToeBoardView::updateBoardMousePosition(int mousePosX, int mousePosY)
 {
     m_mouseX = mousePosX;
-    m_mouseY = mousePosY;
-    emit repaintRequested();
+    m_mouseY = mousePosY;    
 }
 
 void UITicTacToeBoardView::updateBoardSize(int width, int height)
 {
+    //Call reset if there are no tokens
     if (m_tokens.size() == 0)
     {
         reset();
     }
+
+    //Reconstruct the image buffer to account for new width/height
     m_width = width;
     m_height = height;
     m_imgBuffer = QImage(width,height,QImage::Format_ARGB32);
 
+    //Determine size of cell on the board
     int sizeW = m_width / 3.0;
     int sizeH = m_height / 3.0;
 
+    //Loop over all tokens updating x,y,w and h
     for (size_t r = 0; r < 3; ++r)
     {
         for (size_t c = 0; c < 3; ++c)
@@ -91,52 +98,65 @@ void UITicTacToeBoardView::updateBoardSize(int width, int height)
             m_tokens[index].h = sizeH;
         }
     }
+
+    //Tell the parent (main) to repaint the board
     emit repaintRequested();
 }
 
-void UITicTacToeBoardView::createPlayerImages()
+void UITicTacToeBoardView::loadTokenImages()
 {
-    m_imgX.load(":/imgX.png");
-    m_imgO.load(":/imgO.png");
+    if (m_imgX.isNull())
+    {
+        m_imgX.load(":/imgX.png");
+    }
+
+    if (m_imgO.isNull())
+    {
+        m_imgO.load(":/imgO.png");
+    }
 }
 
 void UITicTacToeBoardView::place(int row, int column, TicTacToeTokenType tokenType)
 {
+    //Update the player class and token type for the cell at row/column.
     TicTacToePlayerClass playerClass = (tokenType == TicTacToeTokenType::X ? TicTacToePlayerClass::Player1 : TicTacToePlayerClass::Player2);
     size_t index = TicTacToeUtils::getIndex(row,column);
     m_tokens[index].playerClass = playerClass;
     m_tokens[index].tokenType = tokenType;
+
+    //Tell the parent (main) to repaint the board
     emit repaintRequested();
 }
 
 void UITicTacToeBoardView::drawBoard(const QRect &drawRectangle, QPainter &g)
 {
+    //Lets create our own buffer
     QPainter bufferG(&m_imgBuffer);
-    bufferG.fillRect(0,0,m_width,m_height,Qt::red);
+    bufferG.fillRect(0,0,m_width,m_height,Qt::black);
+
+    //Draw the tic tac toe lines to our buffer
+    int lineX1 = m_width / 3;
+    int lineX2 = m_width - (m_width / 3);
+    int lineY1 = m_height / 3;
+    int lineY2 = m_height - (m_height / 3);
+
+    QPen linePen;
+    linePen.setWidth(4);
+    linePen.setColor(QColor(127,255,127));
+    bufferG.setPen(linePen);
+    bufferG.drawLine(QLine(lineX1, 0, lineX1, m_height));
+    bufferG.drawLine(QLine(lineX2, 0, lineX2, m_height));
+    bufferG.drawLine(QLine(0, lineY1, m_width, lineY1));
+    bufferG.drawLine(QLine(0, lineY2, m_width, lineY2));
+
+    //Loop over the cells and draw all tokens to our buffer
     for (size_t r = 0; r < 3; ++r)
     {
         for (size_t c = 0; c < 3; ++c)
         {
             size_t index = TicTacToeUtils::getIndex(r,c);
             UITicTacToeToken token = m_tokens[index];
-            QRect rect (token.x,token.y,token.w,token.h);
-
-            if (token.playerClass == TicTacToePlayerClass::NoPlayer)
-            {
-                bufferG.fillRect(rect,QColor(255,255,255));
-            }
-            else if (token.playerClass == TicTacToePlayerClass::Player1)
-            {
-                bufferG.fillRect(rect,QColor(127,255,127));
-            }
-            else if (token.playerClass == TicTacToePlayerClass::Player2)
-            {
-                bufferG.fillRect(rect,QColor(255,127,127));
-            }
-            if (rect.contains(QPoint(m_mouseX,m_mouseY)))
-            {
-                bufferG.fillRect(rect,Qt::black);
-            }
+            QRect rect (token.x,token.y,token.w,token.h);            
             if (m_tokens[index].tokenType == TicTacToeTokenType::X)
             {
                 bufferG.drawImage(rect,m_imgX);
@@ -145,15 +165,16 @@ void UITicTacToeBoardView::drawBoard(const QRect &drawRectangle, QPainter &g)
             {
                 bufferG.drawImage(rect,m_imgO);
             }            
-
         }
     }
+
+    //Draw our buffer to the parent (main) buffer
     g.drawImage(drawRectangle,m_imgBuffer);
 }
 
 void UITicTacToeBoardView::onInitialize()
 {
-    createPlayerImages();
+    loadTokenImages();
     reset();
 }
 

@@ -1,8 +1,9 @@
-/*
-    TicTacToePlayer.hpp
-    
+/**
+ * @author Corey Berry (corey.berry@cbtek.net)
+ * @file TicTacToePlayer.hpp
+ * @date 07-18-17
+ **/
 
-*/
 #pragma once
 
 #include <string>
@@ -20,31 +21,37 @@ class TicTacToePlayer
 {
 public:
     /**
-     * @brief getPlayerClass
+     * @brief getPlayerClass Return the class of this player
+     * Can be either Player1, Player2 or None
      * @return
      */
     virtual TicTacToePlayerClass getPlayerClass() const = 0;
 
     /**
-     * @brief getPlayerType
+     * @brief getPlayerType Return the type of this player.
+     * Can be either Human, Computer or None
      * @return
      */
     virtual TicTacToePlayerType getPlayerType() const = 0;
 
     /**
-     * @brief getPlayerName
+     * @brief getPlayerName Return player name
      * @return
      */
     virtual std::string getPlayerName() const = 0;
 
     /**
-     * @brief play
-     * @param rowPlayed
-     * @param columnPlayed
-     * @param currentBoard
-     * @return
+     * @brief play This command occurs to perform a single
+     * play on the TicTacToe board.  The played row and column
+     * is returned as well as the result of the play.
+     * @param rowPlayed[out] The row to be played
+     * @param columnPlayed[out] The column to be played
+     * @param currentBoard The current board to play on
+     * @return Return result type of play
      */
-    virtual TicTacToePlayResultType play(int &rowPlayed, int &columnPlayed, const TicTacToeBoard& currentBoard) = 0;
+    virtual TicTacToePlayResultType play(int &rowPlayed,
+                                         int &columnPlayed,
+                                         const TicTacToeBoard& currentBoard) = 0;
 
 
     /**	
@@ -54,6 +61,9 @@ public:
     virtual ~TicTacToePlayer(){}
 };
 
+/**
+ * @brief TicTacToePlayerPtr typedefed shared ptr for TicTacToePlayer
+ */
 typedef std::shared_ptr<TicTacToePlayer> TicTacToePlayerPtr;
 
 }}}//end namespace
