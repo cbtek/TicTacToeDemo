@@ -20,6 +20,7 @@ UITicTacToeWindow::UITicTacToeWindow(QWidget *parent) :
     m_ui->setupUi(this);
     m_ptrBoardMain = new UITicTacToeBoardMain;
     m_ui->m_frmMain->layout()->addWidget(m_ptrBoardMain);
+    connect(m_ui->m_btnClose,SIGNAL(clicked(bool)),this,SLOT(close()));
     connect(m_ptrBoardMain,SIGNAL(scoresUpdated(int,int,int)),this,SLOT(onScoresUpdated(int,int,int)));
     connect(m_ui->m_chkEnableMusic,
             SIGNAL(toggled(bool)),
