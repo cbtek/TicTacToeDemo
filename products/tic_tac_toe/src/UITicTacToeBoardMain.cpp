@@ -67,8 +67,8 @@ UITicTacToeBoardMain::UITicTacToeBoardMain(QWidget *parent) :
 #endif
 
     //Set audio volumes
-    m_audTokenPlay.setVolume(100);
-    m_audGameOver.setVolume(100);
+    m_audTokenPlay.setVolume(1.0);
+    m_audGameOver.setVolume(1.0);
     m_audThemeMusic.setVolume(50);
 
     //Initialize static animation effect
