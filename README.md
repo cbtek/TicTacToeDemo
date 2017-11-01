@@ -1,9 +1,9 @@
-# ProctorFreeProjects Description
+# TicTacToe Demo Description
 
 This repository was created to house projects for the ProctorFree Coding Audition. 
 I implemented both the TicTacToe program as well as the webcam project. 
 
-# ProctorFreeProjects Building With QtCreator 
+# TicTacToe Demo Building With QtCreator 
 
 1) Clone this repositiory 
 2) Use QtCreator to open the CMakeLists.txt file 
@@ -14,7 +14,7 @@ I implemented both the TicTacToe program as well as the webcam project.
 7) A bin folder with artifacts gets generated at the same level as ProctorFreeProjects 
  
  
-# ProctorFreeProjects Videos
+# TicTacToe Demo Videos
 This video shows the tic tac toe program. 
 
 [![TicTacToe Example](http://img.youtube.com/vi/2e6uR2cmVqE/0.jpg)](https://www.youtube.com/watch?v=2e6uR2cmVqE "Tic Tac Toe Example")
