@@ -1,8 +1,3 @@
-# TicTacToe Demo Description
-
-This repository was created to house projects for the ProctorFree Coding Audition. 
-I implemented both the TicTacToe program as well as the webcam project. 
-
 # TicTacToe Demo Building With QtCreator 
 
 1) Clone this repositiory 
