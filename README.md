@@ -6,7 +6,7 @@
 4) Click "Configure Project" 
 5) Enable parallel compiliation by adding the -j option to the command line path (optional)  
 6) Build or CTRL+B 
-7) A bin folder with artifacts gets generated at the same level as ProctorFreeProjects 
+7) A bin folder with artifacts gets generated at the same level as projects folder
  
  
 # TicTacToe Demo Videos
